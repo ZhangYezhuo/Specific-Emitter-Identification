@@ -169,7 +169,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 0.3e9
+    value: 1e9
   states:
     bus_sink: false
     bus_source: false
@@ -264,9 +264,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [73, 297]
+    coordinate: [80, 292.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_complex_to_float_0
   id: blocks_complex_to_float
   parameters:
@@ -397,7 +397,7 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    num_items: int(samp_rate/2)
+    num_items: int(samp_rate/5)
     type: complex
     vlen: '1'
   states:
@@ -418,15 +418,17 @@ blocks:
     repeat: 'True'
     tags: '[]'
     type: float
-    vector: np.hstack((np.ones(int(pw*samp_rate)), np.zeros(int((pri-pw)*samp_rate))))
+    vector: np.hstack((np.ones(int(pw*samp_rate)), np.zeros(int((pri-pw)*samp_rate)),
+      np.ones(int(pw*samp_rate)), np.zeros(int((pri*0.8-pw)*samp_rate)), np.ones(int(pw*samp_rate)),
+      np.zeros(int((pri*1.2-pw)*samp_rate))))
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [280, 324.0]
+    coordinate: [288, 332.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: channels_channel_model_0
   id: channels_channel_model
   parameters:

@@ -134,8 +134,8 @@ blocks:
     rangeType: float
     start: '0'
     step: 10e-6
-    stop: 1e-3
-    value: 200e-6
+    stop: 2100e-6
+    value: 1050e-6
     widget: counter_slider
   states:
     bus_sink: false
@@ -155,8 +155,8 @@ blocks:
     rangeType: float
     start: '0'
     step: 1e-6
-    stop: 500e-6
-    value: 100e-6
+    stop: '25.4e-6'
+    value: '12.7e-6'
     widget: counter_slider
   states:
     bus_sink: false
@@ -169,7 +169,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 0.3e9
+    value: 330e6
   states:
     bus_sink: false
     bus_source: false
@@ -266,7 +266,7 @@ blocks:
     bus_structure: null
     coordinate: [73, 297]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_complex_to_float_0
   id: blocks_complex_to_float
   parameters:
@@ -290,7 +290,7 @@ blocks:
     alias: ''
     append: 'False'
     comment: ''
-    file: '"D:/GNUradio/data/20230725/{}".format(device)'
+    file: '"D:/GNUradio/data/20230731/delay-16"'
     type: complex
     unbuffered: 'False'
     vlen: '1'
@@ -334,7 +334,7 @@ blocks:
     bus_structure: null
     coordinate: [1008, 436.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: blocks_multiply_const_vxx_0
   id: blocks_multiply_const_vxx
   parameters:
@@ -397,7 +397,7 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    num_items: int(samp_rate/2)
+    num_items: int(samp_rate/5)
     type: complex
     vlen: '1'
   states:
@@ -424,9 +424,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [280, 324.0]
+    coordinate: [312, 356.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: channels_channel_model_0
   id: channels_channel_model
   parameters:
@@ -440,7 +440,7 @@ blocks:
     minoutbuf: '0'
     noise_voltage: pow(noise_power*2, 1/2)
     seed: '0'
-    taps: '1'
+    taps: '16'
   states:
     bus_sink: false
     bus_source: false
@@ -840,7 +840,7 @@ blocks:
     bus_structure: null
     coordinate: [1225, 273]
     rotation: 0
-    state: true
+    state: enabled
 - name: qtgui_freq_sink_x_0
   id: qtgui_freq_sink_x
   parameters:

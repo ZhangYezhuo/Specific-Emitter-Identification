@@ -33,6 +33,23 @@ options:
     state: enabled
 
 blocks:
+- name: RRC_0
+  id: variable_rrc_filter_taps
+  parameters:
+    alpha: '0.35'
+    comment: ''
+    gain: '1.0'
+    ntaps: 11*sps
+    samp_rate: 1/pw
+    sym_rate: 1/pw/2
+    value: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 284.0]
+    rotation: 0
+    state: true
 - name: SNR
   id: variable_qtgui_range
   parameters:
@@ -98,6 +115,18 @@ blocks:
     bus_structure: null
     coordinate: [116, 636]
     rotation: 0
+    state: disabled
+- name: jitter_range
+  id: variable
+  parameters:
+    comment: ''
+    value: '0.3'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [816, 28.0]
+    rotation: 0
     state: enabled
 - name: mod_freq
   id: variable
@@ -134,8 +163,8 @@ blocks:
     rangeType: float
     start: '0'
     step: 10e-6
-    stop: 1e-3
-    value: 200e-6
+    stop: 2100e-6
+    value: 1050e-6
     widget: counter_slider
   states:
     bus_sink: false
@@ -155,8 +184,8 @@ blocks:
     rangeType: float
     start: '0'
     step: 1e-6
-    stop: 500e-6
-    value: 100e-6
+    stop: '25.4e-6'
+    value: '12.7e-6'
     widget: counter_slider
   states:
     bus_sink: false
@@ -165,11 +194,23 @@ blocks:
     coordinate: [1674, 429]
     rotation: 0
     state: true
+- name: random_numbers
+  id: variable
+  parameters:
+    comment: ''
+    value: '10000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [680, 28.0]
+    rotation: 0
+    state: enabled
 - name: rf_freq
   id: variable
   parameters:
     comment: ''
-    value: 0.3e9
+    value: 330e6
   states:
     bus_sink: false
     bus_source: false
@@ -201,6 +242,18 @@ blocks:
     coordinate: [1670, 288]
     rotation: 0
     state: enabled
+- name: sps
+  id: variable
+  parameters:
+    comment: ''
+    value: '2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [192, 276.0]
+    rotation: 0
+    state: enabled
 - name: analog_agc_xx_0
   id: analog_agc_xx
   parameters:
@@ -220,7 +273,7 @@ blocks:
     bus_structure: null
     coordinate: [402, 483]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: analog_sig_source_x_0
   id: analog_sig_source_x
   parameters:
@@ -244,29 +297,6 @@ blocks:
     coordinate: [75, 149]
     rotation: 0
     state: true
-- name: analog_sig_source_x_1
-  id: analog_sig_source_x
-  parameters:
-    affinity: ''
-    alias: ''
-    amp: '1'
-    comment: ''
-    freq: mod_freq/2
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    offset: '0'
-    phase: '0'
-    samp_rate: samp_rate
-    showports: 'False'
-    type: float
-    waveform: analog.GR_SQR_WAVE
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [73, 297]
-    rotation: 0
-    state: enabled
 - name: blocks_complex_to_float_0
   id: blocks_complex_to_float
   parameters:
@@ -300,7 +330,7 @@ blocks:
     bus_structure: null
     coordinate: [1290, 465]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_float_to_complex_0
   id: blocks_float_to_complex
   parameters:
@@ -334,7 +364,7 @@ blocks:
     bus_structure: null
     coordinate: [1008, 436.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: blocks_multiply_const_vxx_0
   id: blocks_multiply_const_vxx
   parameters:
@@ -352,7 +382,7 @@ blocks:
     bus_structure: null
     coordinate: [625, 632]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_multiply_xx_0
   id: blocks_multiply_xx
   parameters:
@@ -397,7 +427,7 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    num_items: int(samp_rate/2)
+    num_items: int(samp_rate/5)
     type: complex
     vlen: '1'
   states:
@@ -406,7 +436,7 @@ blocks:
     bus_structure: null
     coordinate: [808, 516.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_vector_source_x_0
   id: blocks_vector_source_x
   parameters:
@@ -418,15 +448,16 @@ blocks:
     repeat: 'True'
     tags: '[]'
     type: float
-    vector: np.hstack((np.ones(int(pw*samp_rate)), np.zeros(int((pri-pw)*samp_rate))))
+    vector: np.hstack([np.hstack((np.ones(int(pw*samp_rate)), np.zeros(int((pri*jitter-pw)*samp_rate))))
+      for jitter in np.random.uniform(1-jitter_range, 1+jitter_range, int(random_numbers))])
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [280, 324.0]
+    coordinate: [216, 340.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: channels_channel_model_0
   id: channels_channel_model
   parameters:
@@ -567,6 +598,25 @@ blocks:
     coordinate: [1634, 145]
     rotation: 0
     state: disabled
+- name: fir_filter_xxx_0_0
+  id: fir_filter_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decim: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_delay: '0'
+    taps: RRC_0
+    type: fff
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [320, 260.0]
+    rotation: 0
+    state: true
 - name: import_0
   id: import
   parameters:
@@ -840,7 +890,7 @@ blocks:
     bus_structure: null
     coordinate: [1225, 273]
     rotation: 0
-    state: true
+    state: disabled
 - name: qtgui_freq_sink_x_0
   id: qtgui_freq_sink_x
   parameters:
@@ -1002,7 +1052,7 @@ blocks:
     bus_structure: null
     coordinate: [899, 771]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_0
   id: qtgui_time_sink_x
   parameters:
@@ -1058,7 +1108,7 @@ blocks:
     marker9: '-1'
     name: '"transmit"'
     nconnections: '1'
-    size: '10240'
+    size: '102400'
     srate: samp_rate
     stemplot: 'False'
     style1: '1'
@@ -1196,7 +1246,7 @@ blocks:
     bus_structure: null
     coordinate: [899, 643]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_1_0
   id: qtgui_time_sink_x
   parameters:
@@ -1293,7 +1343,7 @@ blocks:
     bus_structure: null
     coordinate: [380, 606]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_waterfall_sink_x_0
   id: qtgui_waterfall_sink_x
   parameters:
@@ -1354,7 +1404,7 @@ blocks:
     bus_structure: null
     coordinate: [898, 897]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: uhd_usrp_source_0
   id: uhd_usrp_source
   parameters:
@@ -1790,13 +1840,11 @@ blocks:
     bus_structure: null
     coordinate: [84, 459]
     rotation: 0
-    state: enabled
+    state: disabled
 
 connections:
 - [analog_agc_xx_0, '0', blocks_multiply_const_vxx_0, '0']
 - [analog_sig_source_x_0, '0', blocks_complex_to_float_0, '0']
-- [analog_sig_source_x_1, '0', blocks_multiply_xx_0, '1']
-- [analog_sig_source_x_1, '0', blocks_multiply_xx_0_0, '1']
 - [blocks_complex_to_float_0, '0', blocks_multiply_xx_0, '0']
 - [blocks_complex_to_float_0, '1', blocks_multiply_xx_0_0, '0']
 - [blocks_float_to_complex_0, '0', channels_channel_model_0, '0']
@@ -1808,11 +1856,12 @@ connections:
 - [blocks_multiply_xx_0, '0', blocks_float_to_complex_0, '0']
 - [blocks_multiply_xx_0_0, '0', blocks_float_to_complex_0, '1']
 - [blocks_skiphead_0, '0', blocks_head_0, '0']
-- [blocks_vector_source_x_0, '0', blocks_multiply_xx_0, '1']
-- [blocks_vector_source_x_0, '0', blocks_multiply_xx_0_0, '1']
+- [blocks_vector_source_x_0, '0', fir_filter_xxx_0_0, '0']
 - [channels_channel_model_0, '0', osmosdr_sink_0, '0']
 - [channels_channel_model_0, '0', qtgui_freq_sink_x_0, '0']
 - [channels_channel_model_0, '0', qtgui_time_sink_x_0, '0']
+- [fir_filter_xxx_0_0, '0', blocks_multiply_xx_0, '1']
+- [fir_filter_xxx_0_0, '0', blocks_multiply_xx_0_0, '1']
 - [uhd_usrp_source_0, '0', analog_agc_xx_0, '0']
 - [uhd_usrp_source_0, '0', qtgui_time_sink_x_1_0, '0']
 
